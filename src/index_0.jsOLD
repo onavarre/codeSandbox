@@ -1,0 +1,99 @@
+import React from "react";
+import ReactDOM from "react-dom";
+
+import "./styles.css";
+
+class App extends React.Component {
+  // Pas aimer par les dev react
+  // clientInput = React.createRef();
+
+  state = {
+    clients: [
+      { id: 1, nom: "Olivier" },
+      { id: 2, nom: "Lin" },
+      { id: 3, nom: "Raphael" }
+    ],
+    nouveauClient: ""
+    // compteur: 0
+  };
+
+  // handleClick() {
+  //   console.log(this.state);
+  // }
+  // handleClick = () => {
+  //   console.log(this.state);
+  //   this.setState({ compteur: this.state.compteur + 1 });
+  // };
+  // handleClick = () => {
+  //   const clients = this.state.clients.slice(); // copy la liste des clients
+  //   clients.push({ id: 4, nom: "mon nom" });
+
+  //   this.setState({ clients: clients });
+  // };
+
+  handleDelete = (id) => {
+    console.log(id);
+    const clients = this.state.clients.slice();
+    const index = clients.findIndex((c) => c.id === id);
+    if (index > 0) {
+      clients.splice(index, 1);
+      this.setState({ clients: clients });
+    }
+  };
+
+  handleSubmit = (event) => {
+    // évite de recharger la page
+    event.preventDefault();
+
+    const client = { id: new Date().getTime(), nom: this.state.nouveauClient };
+    const clients = this.state.clients.slice();
+
+    clients.push(client);
+    this.setState({ clients: clients, nouveauClient: "" });
+  };
+
+  handleChange = (event) => {
+    const currentValue = event.currentTarget.value;
+    this.setState({ nouveauClient: currentValue });
+    console.log(currentValue);
+  };
+
+  render() {
+    const title = "Liste des clients";
+
+    return (
+      <div>
+        <h1>{title}</h1>
+        {/* <button onClick={this.handleClick.bind(this)}> click</button> */}
+        {/* <button onClick={() => this.handleClick(this)}> click</button> */}
+        {/* <button onClick={this.handleClick}> click</button> {this.state.compteur} */}
+        {/* NE PAS MANIPULER LE DOM, PAS DE QUERYSELECTOR */}
+        <ul>
+          {this.state.clients.map((client) => (
+            <li key={client.id}>
+              {client.nom}
+              <button onClick={() => this.handleDelete(client.id)}>X</button>
+            </li>
+          ))}
+        </ul>
+        <form onSubmit={this.handleSubmit}>
+          {/* PAS AIMER PAR LES DEV REACT D'UTILISER ref. <input
+            ref={this.clientInput}
+            type="text"
+            placeholder="Ajouter un client"
+          ></input> */}
+          <input
+            value={this.state.nouveauClient}
+            type="text"
+            placeholder="Ajouter un client"
+            onChange={this.handleChange}
+          ></input>
+          <button>Ajouter</button>
+        </form>
+      </div>
+    );
+  }
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
